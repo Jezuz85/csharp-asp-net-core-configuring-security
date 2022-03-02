@@ -49,7 +49,19 @@ namespace ConferenceTracker
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
-        {            
+        {
+            if (env.IsDevelopment())
+            {
+                logger.LogInformation("Environment is in development");
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             using (var context = scope.ServiceProvider.GetService<ApplicationDbContext>())
                 context.Database.EnsureCreated();
@@ -66,19 +78,6 @@ namespace ConferenceTracker
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            if (!env.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-
-                app.UseHsts();
-            }
-            else
-            {
-                logger.LogInformation("Environment is in development");
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
 
             app.UseEndpoints(endpoints =>
             {
