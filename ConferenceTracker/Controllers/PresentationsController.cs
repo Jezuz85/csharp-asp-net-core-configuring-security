@@ -72,7 +72,6 @@ namespace ConferenceTracker.Controllers
 
             if (id == null)
             {
-                _logger.LogWarning("Presentation id," + id + ", was not found.");
                 _logger.LogError("Presentation id was null.");
                 return NotFound();
             }
@@ -80,6 +79,7 @@ namespace ConferenceTracker.Controllers
             var presentation = _presentationRepository.GetPresentation((int)id);
             if (presentation == null)
             {
+                _logger.LogWarning("Presentation id," + id + ", was not found.");
                 return NotFound();
             }
             
